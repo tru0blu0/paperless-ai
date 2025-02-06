@@ -53,7 +53,10 @@ const limitFunctions = {
     activateTagging: parseEnvBoolean(process.env.ACTIVATE_TAGGING, 'yes'),
     activateCorrespondents: parseEnvBoolean(process.env.ACTIVATE_CORRESPONDENTS, 'yes'),
     activateDocumentType: parseEnvBoolean(process.env.ACTIVATE_DOCUMENT_TYPE, 'yes'),
-    activateTitle: parseEnvBoolean(process.env.ACTIVATE_TITLE, 'yes')
+    activateTitle: parseEnvBoolean(process.env.ACTIVATE_TITLE, 'yes'),
+    activateLegalNER: parseEnvBoolean(process.env.ACTIVATE_LEGAL_NER, 'yes'),
+    activateRelationshipExtraction: parseEnvBoolean(process.env.ACTIVATE_RELATIONSHIP_EXTRACTION, 'yes'),
+    activateClauseIdentification: parseEnvBoolean(process.env.ACTIVATE_CLAUSE_IDENTIFICATION, 'yes')
 };
 
 console.log('Loaded environment variables:', {
@@ -96,22 +99,16 @@ module.exports = {
         activateTagging: limitFunctions.activateTagging,
         activateCorrespondents: limitFunctions.activateCorrespondents,
         activateDocumentType: limitFunctions.activateDocumentType,
-        activateTitle: limitFunctions.activateTitle
+        activateTitle: limitFunctions.activateTitle,
+        activateLegalNER: limitFunctions.activateLegalNER,
+        activateRelationshipExtraction: limitFunctions.activateRelationshipExtraction,
+        activateClauseIdentification: limitFunctions.activateClauseIdentification
     },
     legal: {
-    nerModel: process.env.LEGAL_NER_MODEL || 'some/legal-ner-model',
-    relationshipExtractionModel: process.env.LEGAL_RELATIONSHIP_MODEL || 'some/legal-relation-model'
-  },
-   limitFunctions: {
-    // Add limit functions to config
-    activateTagging: limitFunctions.activateTagging,
-    activateCorrespondents: limitFunctions.activateCorrespondents,
-    activateDocumentType: limitFunctions.activateDocumentType,
-    activateTitle: limitFunctions.activateTitle,
-    activateLegalNER: limitFunctions.activateLegalNER, // added function
-    activateRelationshipExtraction: limitFunctions.activateRelationshipExtraction, // added function
-    activateClauseIdentification: limitFunctions.activateClauseIdentification // added function
-  },
+        nerModel: process.env.LEGAL_NER_MODEL || 'mrm8488/bert-base-spanish-wwm-cased-finetuned-legal-ner', // researched a legal-ner model.
+        relationshipExtractionModel: process.env.LEGAL_RELATIONSHIP_MODEL || 'some/legal-relation-model',
+        summarizationModel: process.env.LEGAL_SUMMARIZATION_MODEL || 'llama3'
+    },
     specialPromptPreDefinedTags: `You are a document analysis AI. You will analyze the document. 
   You take the main information to associate tags with the document. 
   You will also find the correspondent of the document (Sender not reciever). Also you find a meaningful and short title for the document.
