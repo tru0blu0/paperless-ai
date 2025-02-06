@@ -1,26 +1,29 @@
 <div class="dashboard">
-  <h1>Paperless-AI Dashboard</h1>
+    <h1 class="text-3xl font-semibold mb-4">Paperless-AI Dashboard</h1>
 
-  <div class="documents">
-    <% if (documents && documents.length > 0) { %>
-      <% documents.forEach(function(doc) { %>
-        <div class="document">
-          <h3><%= doc.title %></h3>
-          <p><strong>Created at:</strong> <%= new Date(doc.created).toLocaleDateString('de-DE') %></p>
-          <p><strong>Tags:</strong>
-            <% if (doc.tags && doc.tags.length > 0) { %>
-              <% doc.tags.forEach(function(tag) { %>
-                <span class="tag"><%= tag %></span>
-              <% }); %>
-            <% } else { %>
-              Keine Tags
-            <% } %>
-          </p>
-          <p><strong>Correspondent:</strong> <%= doc.correspondent || 'Nicht zugewiesen' %></p>
-        </div>
-      <% }); %>
-    <% } else { %>
-      <p>No documents found.</p>
-    <% } %>
-  </div>
+    <div class="documents grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% if (documents && documents.length > 0) { %>
+            <% documents.forEach(function(doc) { %>
+            <div class="material-card">
+                <h3 class="text-lg font-medium mb-2"><%= doc.title %></h3>
+                <p class="text-sm text-gray-500 mb-1"><strong>Created at:</strong> <%= new
+                            Date(doc.created).toLocaleDateString('de-DE') %></p>
+                <p class="text-sm text-gray-500 mb-2"><strong>Tags:</strong>
+                    <% if (doc.tags && doc.tags.length > 0) { %>
+                    <% doc.tags.forEach(function(tag) { %>
+                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-1"><%=
+                                tag %></span>
+                    <% }); %>
+                    <% } else { %>
+                    <span class="text-gray-400 text-sm">No tags</span>
+                    <% } %>
+                </p>
+                <p class="text-sm text-gray-500"><strong>Correspondent:</strong> <%= doc.correspondent || 'Not
+                            assigned' %></p>
+            </div>
+            <% }); %>
+        <% } else { %>
+        <p class="text-lg text-gray-600">No documents found.</p>
+        <% } %>
+    </div>
 </div>
