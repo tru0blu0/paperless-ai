@@ -55,9 +55,33 @@ class CustomOpenAIService {
       const tokens = await this.calculateTokens(text);
       if (tokens <= maxTokens) return text;
   
-      // Simple truncation strategy - could be made more sophisticated
-      const ratio = maxTokens / tokens;
-      return text.slice(0, Math.floor(text.length * ratio));
+      // More sophisticated truncation strategy: Preserve context by prioritizing the beginning and end
+      const tokensToKeep = maxTokens;
+      const encoded = this.tokenizer.encode(text);
+
+      // Calculate how many tokens to keep from the beginning and end
+      const tokensFromBeginning = Math.floor(tokensToKeep * 0.4); // Keep 40% from the beginning
+      const tokensFromEnd = tokensToKeep - tokensFromBeginning; // Keep remaining from the end
+  
+      let truncatedEncoded = [];
+  
+      // Add tokens from the beginning
+      truncatedEncoded.push(...encoded.slice(0, tokensFromBeginning));
+  
+      // Add tokens from the end
+      truncatedEncoded.push(...encoded.slice(encoded.length - tokensFromEnd));
+  
+      // Decode the truncated tokens back to text
+      let truncatedText = this.tokenizer.decode(truncatedEncoded);
+
+      // Ensure the truncated text ends with a complete sentence if possible.
+      const lastSentenceEnd = Math.max(truncatedText.lastIndexOf('. '), truncatedText.lastIndexOf('? '), truncatedText.lastIndexOf('! '));
+
+      if (lastSentenceEnd > -1) {
+        truncatedText = truncatedText.substring(0, lastSentenceEnd + 1);
+      }
+  
+      return truncatedText;
     }
   
   async analyzeDocument(content, existingTags = [], existingCorrespondentList = [], id) {
