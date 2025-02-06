@@ -11,7 +11,7 @@ class PaperlessService {
         this.tagCache = new Map();
         this.customFieldCache = new Map();
         this.lastTagRefresh = 0;
-        this.CACHE_LIFETIME = 3000; // 3 Sekunden
+        this.CACHE_LIFETIME = 3000; // 3 Seconds
     }
 
     initialize() {
@@ -51,12 +51,12 @@ class PaperlessService {
                 console.log('[ERROR] headers:', error.response.headers);
                 console.log('[ERROR] data:', error.response.data); // Add this line to log response data
             }
-            return null; // Behalten Sie das return null bei, damit der Prozess weiterlaufen kann
+            return null; // Keep the return null so that the process can continue
         }
     }
 
 
-    // Aktualisiert den Tag-Cache, wenn er älter als CACHE_LIFETIME ist
+    // Updates the tag cache if it is older than CACHE_LIFETIME
     async ensureTagCache() {
         const now = Date.now();
         if (this.tagCache.size === 0 || (now - this.lastTagRefresh) > this.CACHE_LIFETIME) {
@@ -64,7 +64,7 @@ class PaperlessService {
         }
     }
 
-    // Lädt alle existierenden Tags
+    // Loads all existing tags
     async refreshTagCache() {
         this.initialize();
         if (!this.client) return;
@@ -92,7 +92,7 @@ class PaperlessService {
         if (!this.client) return null;
 
         try {
-            // Versuche zuerst, das benutzerdefinierte Feld zu erstellen
+            // Try first to create the custom field
             const response = await this.client.post('/custom_fields/', {
                 name: fieldName,
                 data_type: fieldType,
