@@ -78,7 +78,7 @@ module.exports = {
     },
     ollama: {
         apiUrl: process.env.OLLAMA_API_URL || 'http://localhost:11434',
-        model: process.env.OLLAMA_MODEL || 'llama2',
+        model: process.env.OLLAMA_MODEL || 'llama3.2',
         maxCtx: parseEnvInt(process.env.OLLAMA_MAX_CTX, 128000, 1024, 500000), // Example min/max values
         expectedResponseTokens: parseEnvInt(process.env.OLLAMA_EXPECTED_RESPONSE_TOKENS, 1024, 64, 4096), // Example min/max values
         temperature: parseEnvFloat(process.env.OLLAMA_TEMPERATURE, 0.7, 0.1, 1.0),
@@ -105,9 +105,9 @@ module.exports = {
         activateClauseIdentification: limitFunctions.activateClauseIdentification
     },
     legal: {
-        nerModel: process.env.LEGAL_NER_MODEL || 'mrm8488/bert-base-spanish-wwm-cased-finetuned-legal-ner', // researched a legal-ner model.
-        relationshipExtractionModel: process.env.LEGAL_RELATIONSHIP_MODEL || 'some/legal-relation-model',
-        summarizationModel: process.env.LEGAL_SUMMARIZATION_MODEL || 'llama3'
+        nerModel: process.env.LEGAL_NER_MODEL || 'nlpaueb/legal-bert-base-uncased', // researched a legal-ner model.
+        relationshipExtractionModel: process.env.LEGAL_RELATIONSHIP_MODEL || 'initium/law_model',
+        summarizationModel: process.env.LEGAL_SUMMARIZATION_MODEL || 'llama3.2'
     },
     specialPromptPreDefinedTags: `You are a document analysis AI. You will analyze the document. 
   You take the main information to associate tags with the document. 
