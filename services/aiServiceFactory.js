@@ -4,6 +4,7 @@ const openaiService = require('./openaiService');
 const ollamaService = require('./ollamaService');
 const customService = require('./customService');
 const legalNerService = require('./legalNerService'); // Import new service
+const relationshipExtractionService = require('./relationshipExtractionService');
 
 class AIServiceFactory {
     static getService(provider) {
@@ -32,6 +33,15 @@ class AIServiceFactory {
         console.error("[ERROR] Error running legal NER:", error);
       }
     }
+      if (config.limitFunctions?.activateRelationshipExtraction === 'yes' && analysis.legalEntities) {
+        try {
+          const relations = await relationshipExtractionService.extractRelationships(content, analysis.legalEntities);
+          analysis.relationships = relations;
+          console.log("[DEBUG] Adding relationships to document");
+        } catch (error) {
+          console.error("[ERROR] Error extracting relationships:", error);
+        }
+      }
     return analysis;
   }
 }
