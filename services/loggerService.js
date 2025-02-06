@@ -99,7 +99,7 @@ class Logger {
 
         this.logPath = path.join(this.logDir, this.logFile);
 
-        // Initialisiere Log-Datei
+        // Initialize Log File
         this.initLogFile();
 
         this.originalConsole = {
@@ -115,16 +115,16 @@ class Logger {
 
     initLogFile() {
         try {
-            // Prüfe ob die Datei die maximale Größe überschreitet
+            // Check if the file exceeds the maximum size
             if (this.checkFileSize()) {
-                // Lösche die alte Datei
+                // Delete the old file
                 fs.unlinkSync(this.logPath);
             }
         } catch (error) {
             console.warn(`[WARNING] Error during log file initialization (deletion): ${error.message}`);
         }
 
-        // Initialisiere HTML-Datei wenn nötig
+        // Initialize HTML file if necessary
         if (this.format === 'html') {
             this.initHtmlFile();
         }
@@ -187,12 +187,12 @@ class Logger {
 
     writeToFile(message) {
         try {
-            // Prüfe Dateigröße vor dem Schreiben
+            // Check file size before writing
             if (this.checkFileSize()) {
-                // Lösche die alte Datei
+                // Delete the old file
                 fs.unlinkSync(this.logPath);
 
-                // Bei HTML-Format müssen wir den Header neu schreiben
+                // If HTML format, we need to rewrite the header
                 if (this.format === 'html') {
                     this.initHtmlFile();
                 }
