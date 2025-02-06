@@ -28,7 +28,6 @@ class PaperlessService {
             console.warn("[WARNING] Paperless API client not initialized. Check your configuration.");
         }
     }
-
     async getThumbnailImage(documentId) {
         this.initialize();
         if (!this.client) return null; // Prevent API call if client not initialized
@@ -1109,7 +1108,48 @@ class PaperlessService {
         }
     }
 
+async getOrCreateDocumentType(name) {
+	this.initialize();
 
+	const existingDocType = await this.searchForExistingDocumentType(name);
+	console.log("[DEBUG] Response Document Type Search: ", existingDocType);
+
+	if (existingDocType) {
+		console.log(`[DEBUG] Found existing document type "${name}" with ID ${existingDocType.id}`);
+		return existingDocType;
+	}
+
+	// Create a new document_type if non exists
+	try {
+		const createResponse = await this.client.post('/document_types/', { 
+			name: name,
+			matching_algorithm: 1, // 1 = ANY
+			match: "",  // Optional: Kann später angepasst werden
+			is_insensitive: true
+		});
+		console.log(`[DEBUG] Created new document type "${name}" with ID ${createResponse.data.id}`);
+		return createResponse.data;
+	} catch (createError) {
+		if (createError.response?.status === 400 && 
+			createError.response?.data?.error?.includes('unique constraint')) {
+        
+			// Race condition check
+			const retryResponse = await this.client.get('/document_types/', {
+				params: { name: name }
+			});
+        
+			const justCreatedDocType = retryResponse.data.results.find(
+				dt => dt.name.toLowerCase() === name.toLowerCase()
+			);
+        
+			if (justCreatedDocType) {
+				console.log(`[DEBUG] Retrieved document type "${name}" after constraint error with ID ${justCreatedDocType.id}`);
+				return justCreatedDocType;
+			}
+		}
+		console.error(`[ERROR] Failed to create document type "${name}":`, createError.message); //Log create error
+		return null;
+	}
     async updateDocument(documentId, updates) {
         this.initialize();
         if (!this.client) return null;
