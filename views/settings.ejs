@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paperless-AI Dashboard</title>
+    <title>Paperless-AI Settings</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -13,13 +14,12 @@
     <script src="https://unpkg.com/tippy.js@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body class="h-full">
-    
-    
     <button id="themeToggle" class="theme-toggle">
         <i class="fas fa-moon dark:fas fa-sun"></i>
     </button>
-    
+
     <div class="layout-container">
         <button id="mobileMenuButton" class="mobile-menu-button">
             <i class="fas fa-bars"></i>
@@ -108,502 +108,304 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Main Form Card -->
                 <div class="material-card">
                     <% if (success || settingsError) { %>
-                        <div class="mb-6 space-y-4">
-                            <% if (success) { %>
-                                <div class="flex gap-2 p-4 bg-green-50 text-green-800 border border-green-200 rounded-lg">
-                                    <i class="fas fa-check-circle mt-1"></i>
-                                    <p><%= success %></p>
-                                </div>
-                            <% } %>
-                            
-                            <% if (settingsError) { %>
-                                <div class="flex gap-2 p-4 bg-red-50 text-red-800 border border-red-200 rounded-lg">
-                                    <i class="fas fa-exclamation-triangle mt-1"></i>
-                                    <p><%= settingsError %></p>
-                                </div>
-                            <% } %>
+                    <div class="mb-6 space-y-4">
+                        <% if (success) { %>
+                        <div class="flex gap-2 p-4 bg-green-50 text-green-800 border border-green-200 rounded-lg">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <p><%= success %></p>
                         </div>
+                        <% } %>
+
+                        <% if (settingsError) { %>
+                        <div class="flex gap-2 p-4 bg-red-50 text-red-800 border border-red-200 rounded-lg">
+                            <i class="fas fa-exclamation-triangle mt-1"></i>
+                            <p><%= settingsError %></p>
+                        </div>
+                        <% } %>
+                    </div>
                     <% } %>
+
                     <form id="setupForm" class="space-y-8">
                         <!-- Connection Section -->
                         <section class="space-y-6">
-                            <h2 class="text-xl font-bold flex items-center gap-2 text-primary mb-4">
+                            <h2 class="section-title">
                                 <i class="fas fa-link"></i>
                                 Connection Settings
                             </h2>
                             <div class="space-y-4">
-                                <div class="space-y-2">
-                                    <label for="paperlessUrl" class="flex items-center gap-2 text-sm font-medium">
-                                        Paperless-ngx API URL
-                                        <button type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none" id="urlHelp">
-                                            <i class="fas fa-circle-question"></i>
-                                        </button>
+                                <div class="form-group">
+                                    <label for="paperlessUrl">Paperless-ngx API URL
+                                        <button type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                            id="urlHelp"></button>
                                     </label>
-                                    <input type="text" 
-                                           id="paperlessUrl" 
-                                           name="paperlessUrl"
-                                           value="<%= config.PAPERLESS_API_URL %>"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                           placeholder="http://your-paperless-instance:8000"
-                                           required>
+                                    <input type="text" id="paperlessUrl" name="paperlessUrl"
+                                        value="<%= config.PAPERLESS_API_URL %>" class="modern-input"
+                                        placeholder="http://your-paperless-instance:8000" required>
                                 </div>
-        
-                                <div class="space-y-2">
-                                    <label for="paperlessToken" class="text-sm font-medium">API Token</label>
-                                    <div class="relative">
-                                        <input type="password" 
-                                               id="paperlessToken" 
-                                               name="paperlessToken"
-                                               value="<%= config.PAPERLESS_API_TOKEN %>"
-                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                               required>
-                                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" data-input="paperlessToken">
+
+                                <div class="form-group">
+                                    <label for="paperlessToken">API Token</label>
+                                    <div class="password-input">
+                                        <input type="password" id="paperlessToken" name="paperlessToken"
+                                            value="<%= config.PAPERLESS_API_TOKEN %>" class="modern-input" required>
+                                        <button type="button" class="password-toggle" data-input="paperlessToken">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
 
-                                <div class="space-y-2">
-                                    <label for="paperlessUsername" class="flex items-center gap-2 text-sm font-medium">
-                                        Paperless-ngx Username
-                                    </label>
-                                    <input type="text" 
-                                           id="paperlessUsername" 
-                                           name="paperlessUsername"
-                                           value="<%= config.PAPERLESS_USERNAME %>"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                           placeholder="Your Paperless-ngx username"
-                                           required>
-                                </div>                                
+                                <div class="form-group">
+                                    <label for="paperlessUsername">Paperless-ngx Username</label>
+                                    <input type="text" id="paperlessUsername" name="paperlessUsername"
+                                        value="<%= config.PAPERLESS_USERNAME %>" class="modern-input"
+                                        placeholder="Your Paperless-ngx username" required>
+                                </div>
                             </div>
                         </section>
-        
+
                         <!-- AI Configuration Section -->
                         <section class="space-y-6">
-                            <h2 class="text-xl font-bold flex items-center gap-2 text-primary mb-4">
+                            <h2 class="section-title">
                                 <i class="fas fa-robot"></i>
                                 AI Configuration
                             </h2>
                             <div class="space-y-4">
-                                <div class="space-y-2">
-                                    <label for="aiProvider" class="text-sm font-medium">AI Provider</label>
-                                    <select id="aiProvider" 
-                                            name="aiProvider"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                        <option value="openai" <%= config.AI_PROVIDER === 'openai' ? 'selected' : '' %>>OpenAI (ChatGPT)</option>
-                                        <option value="ollama" <%= config.AI_PROVIDER === 'ollama' ? 'selected' : '' %>>Ollama (Local LLM)</option>
-                                        <option value="custom" <%= config.AI_PROVIDER === 'custom' ? 'selected' : '' %>>Custom</option>
+                                <div class="form-group">
+                                    <label for="aiProvider">AI Provider</label>
+                                    <select id="aiProvider" name="aiProvider" class="modern-input">
+                                        <option value="openai" <%= config.AI_PROVIDER==='openai' ? 'selected' : '' %>>OpenAI
+                                            (ChatGPT)</option>
+                                        <option value="ollama" <%= config.AI_PROVIDER==='ollama' ? 'selected' : '' %>>Ollama
+                                            (Local LLM)</option>
+                                        <option value="custom" <%= config.AI_PROVIDER==='custom' ? 'selected' : '' %>>Custom
+                                        </option>
                                     </select>
                                 </div>
 
                                 <!-- OpenAI Settings -->
-                                <div id="openaiSettings" class="space-y-4">
-                                    <div class="space-y-2">
-                                        <label for="openaiKey" class="text-sm font-medium">OpenAI API Key</label>
-                                        <div class="relative">
-                                            <input type="password" 
-                                                id="openaiKey" 
-                                                name="openaiKey"
-                                                value="<%= config.OPENAI_API_KEY %>"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" data-input="openaiKey">
+                                <div id="openaiSettings" class="provider-settings">
+                                    <div class="form-group">
+                                        <label for="openaiKey">OpenAI API Key</label>
+                                        <div class="password-input">
+                                            <input type="password" id="openaiKey" name="openaiKey"
+                                                value="<%= config.OPENAI_API_KEY %>" class="modern-input">
+                                            <button type="button" class="password-toggle" data-input="openaiKey">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    
-                                    <div class="space-y-2">
-                                        <label for="openaiModel" class="text-sm font-medium">OpenAI Model</label>
-                                        <select id="openaiModel" 
-                                                name="openaiModel"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="gpt-3.5-turbo-0125" <%= config.OPENAI_MODEL === 'gpt-3.5-turbo-0125' ? 'selected' : '' %>>GPT-3.5 Turbo</option>
-                                            <option value="gpt-4o" <%= config.OPENAI_MODEL === 'gpt-4o' ? 'selected' : '' %>>GPT-4o</option>
-                                            <option value="gpt-4o-mini" <%= config.OPENAI_MODEL === 'gpt-4o-mini' ? 'selected' : '' %>>GPT-4o-mini (Best value)</option>
+
+                                    <div class="form-group">
+                                        <label for="openaiModel">OpenAI Model</label>
+                                        <select id="openaiModel" name="openaiModel" class="modern-input">
+                                            <option value="gpt-3.5-turbo-0125" <%= config.OPENAI_MODEL==='gpt-3.5-turbo-0125'
+                                                ? 'selected' : '' %>>GPT-3.5 Turbo</option>
+                                            <option value="gpt-4o" <%= config.OPENAI_MODEL==='gpt-4o' ? 'selected' : '' %>>GPT-4o
+                                            </option>
+                                            <option value="gpt-4o-mini" <%= config.OPENAI_MODEL==='gpt-4o-mini' ? 'selected' : '' %>>GPT-4o-mini
+                                                (Best value)</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <!-- Ollama Settings -->
-                                <div id="ollamaSettings" class="space-y-4">
-                                    <div class="space-y-2">
-                                        <label for="ollamaUrl" class="text-sm font-medium">Ollama API URL</label>
-                                        <input type="text" 
-                                            id="ollamaUrl" 
-                                            name="ollamaUrl"
-                                            value="<%= config.OLLAMA_API_URL %>"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <div id="ollamaSettings" class="provider-settings">
+                                    <div class="form-group">
+                                        <label for="ollamaUrl">Ollama API URL</label>
+                                        <input type="text" id="ollamaUrl" name="ollamaUrl"
+                                            value="<%= config.OLLAMA_API_URL %>" class="modern-input">
                                     </div>
-                                    
-                                    <div class="space-y-2">
-                                        <label for="ollamaModel" class="text-sm font-medium">Ollama Model</label>
-                                        <input type="text" 
-                                            id="ollamaModel" 
-                                            name="ollamaModel"
-                                            value="<%= config.OLLAMA_MODEL %>"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
+                                    <div class="form-group">
+                                        <label for="ollamaModel">Ollama Model</label>
+                                        <input type="text" id="ollamaModel" name="ollamaModel"
+                                            value="<%= config.OLLAMA_MODEL %>" class="modern-input">
                                     </div>
                                 </div>
 
                                 <!-- Custom Provider Settings -->
-                                <div id="customSettings" class="space-y-4">
-                                    <div class="space-y-2">
-                                        <label for="customBaseUrl" class="text-sm font-medium">Base URL</label>
-                                        <input type="text" 
-                                            id="customBaseUrl" 
-                                            name="customBaseUrl"
-                                            value="<%= config.CUSTOM_BASE_URL %>"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                <div id="customSettings" class="provider-settings">
+                                    <div class="form-group">
+                                        <label for="customBaseUrl">Base URL</label>
+                                        <input type="text" id="customBaseUrl" name="customBaseUrl"
+                                            value="<%= config.CUSTOM_BASE_URL %>" class="modern-input"
                                             placeholder="https://api.example.com">
                                     </div>
 
-                                    <div class="space-y-2">
-                                        <label for="customApiKey" class="text-sm font-medium">API Key</label>
-                                        <div class="relative">
-                                            <input type="password" 
-                                                id="customApiKey" 
-                                                name="customApiKey"
-                                                value="<%= config.CUSTOM_API_KEY %>"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" data-input="customApiKey">
+                                    <div class="form-group">
+                                        <label for="customApiKey">API Key</label>
+                                        <div class="password-input">
+                                            <input type="password" id="customApiKey" name="customApiKey"
+                                                value="<%= config.CUSTOM_API_KEY %>" class="modern-input">
+                                            <button type="button" class="password-toggle" data-input="customApiKey">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </div>
                                     </div>
 
-                                    <div class="space-y-2">
-                                        <label for="customModel" class="text-sm font-medium">Model</label>
-                                        <input type="text" 
-                                            id="customModel" 
-                                            name="customModel"
-                                            value="<%= config.CUSTOM_MODEL %>"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    <div class="form-group">
+                                        <label for="customModel">Model</label>
+                                        <input type="text" id="customModel" name="customModel"
+                                            value="<%= config.CUSTOM_MODEL %>" class="modern-input"
                                             placeholder="Enter model name">
                                     </div>
                                 </div>
                             </div>
                         </section>
-        
+
                         <!-- Advanced Settings Section -->
                         <section class="space-y-6">
-                            <h2 class="text-xl font-bold flex items-center gap-2 text-primary mb-4">
+                            <h2 class="section-title">
                                 <i class="fas fa-cog"></i>
                                 Advanced Settings
                             </h2>
-                            <div class="space-y-2">
+                            <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="useExistingData">Use existing Correspondents and Tags?</label>
-                                    <select id="useExistingData" 
-                                            name="useExistingData" 
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                        <option value="no" <%= config.USE_EXISTING_DATA === 'no' ? 'selected' : '' %>>No</option>
+                                    <select id="useExistingData" name="useExistingData" class="modern-input">
+                                        <option value="no" <%= config.USE_EXISTING_DATA === 'no' ? 'selected' : '' %>>No
+                                        </option>
                                         <option value="yes" <%= config.USE_EXISTING_DATA === 'yes' ? 'selected' : '' %>>Yes</option>
                                     </select>
                                 </div>
-                                <div class="space-y-2">
-                                    <label for="scanInterval" class="text-sm font-medium">Scan Interval (Cron Format)</label>
-                                    <input type="text" 
-                                           id="scanInterval" 
-                                           name="scanInterval"
-                                           value="<%= config.SCAN_INTERVAL %>"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                           required>
-                                    <p class="text-sm text-gray-500">Default: every 30 minutes</p>
+                                <div class="form-group">
+                                    <label for="scanInterval">Scan Interval (Cron Format)</label>
+                                    <input type="text" id="scanInterval" name="scanInterval"
+                                        value="<%= config.SCAN_INTERVAL %>" class="modern-input" required>
+                                    <p class="help-text">Default: every 30 minutes</p>
                                 </div>
-        
+
                                 <!-- Tags Section -->
                                 <div class="space-y-4">
-                                    <div class="space-y-2">
-                                        <label for="showTags" class="text-sm font-medium">Process only specific pre tagged documents?</label>
-                                        <select id="showTags" 
-                                                name="showTags" 
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="no" <%= config.PROCESS_PREDEFINED_DOCUMENTS === 'no' ? 'selected' : '' %>>No</option>
-                                            <option value="yes" <%= config.PROCESS_PREDEFINED_DOCUMENTS === 'yes' ? 'selected' : '' %>>Yes</option>
+                                    <div class="form-group">
+                                        <label for="showTags">Process only specific pre tagged documents?</label>
+                                        <select id="showTags" name="showTags" class="modern-input">
+                                            <option value="no" <%= config.PROCESS_PREDEFINED_DOCUMENTS==='no' ? 'selected'
+                                                : '' %>>No</option>
+                                            <option value="yes" <%= config.PROCESS_PREDEFINED_DOCUMENTS==='yes' ? 'selected'
+                                                : '' %>>Yes</option>
                                         </select>
                                     </div>
-        
-                                    <div id="tagsInputSection" class="<%= config.PROCESS_PREDEFINED_DOCUMENTS === 'yes' ? '' : 'hidden' %> space-y-4">
-                                        <div class="space-y-2">
-                                            <label for="tagInput" class="text-sm font-medium">Tags</label>
-                                            <div class="flex gap-2">
-                                                <input type="text" 
-                                                    id="tagInput" 
-                                                    class="flex-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+
+                                    <div id="tagsInputSection"
+                                        class="<%= config.PROCESS_PREDEFINED_DOCUMENTS === 'yes' ? '' : 'hidden' %> space-y-4">
+                                        <div class="form-group">
+                                            <label for="tagInput">Tags</label>
+                                            <div class="tag-input-container">
+                                                <input type="text" id="tagInput"
+                                                    class="modern-input flex-1"
                                                     placeholder="Enter a tag and press Enter">
-                                                <button type="button" 
-                                                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                                    <i class="fas fa-plus mr-2"></i>
-                                                    Add
-                                                </button>
-                                            </div>
-                                            <div id="tagsContainer" class="flex flex-wrap gap-2 mt-2">
-                                                <% if (config.TAGS && Array.isArray(config.TAGS) && config.TAGS.length > 0) { %>
-                                                    <% config.TAGS.forEach(tag => { %>
-                                                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center gap-2">
-                                                            <span><%= tag %></span>
-                                                            <button type="button" class="hover:text-blue-600"><i class="fas fa-times"></i></button>
-                                                        </div>
-                                                    <% }); %>
-                                                <% } %>
-                                            </div>
-                                            <input type="hidden" id="tags" name="tags" value="<%= Array.isArray(config.TAGS) ? config.TAGS.join(',') : '' %>">
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <!-- AI Tag Section -->
-                                <div class="border-t pt-4 space-y-4">
-                                    <div class="space-y-2">
-                                        <label for="aiProcessedTag" class="text-sm font-medium">Add AI-processed tag to documents?</label>
-                                        <select id="aiProcessedTag" 
-                                                name="aiProcessedTag" 
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="no" <%= config.ADD_AI_PROCESSED_TAG === 'no' ? 'selected' : '' %>>No</option>
-                                            <option value="yes" <%= config.ADD_AI_PROCESSED_TAG === 'yes' ? 'selected' : '' %>>Yes</option>
-                                        </select>
-                                    </div>
-        
-                                    <div id="aiTagNameSection" class="<%= config.ADD_AI_PROCESSED_TAG === 'yes' ? '' : 'hidden' %> space-y-2">
-                                        <label for="aiTagName" class="text-sm font-medium">AI-processed Tag Name</label>
-                                        <input type="text" 
-                                            id="aiTagName" 
-                                            name="aiTagName"
-                                            value="<%= config.AI_PROCESSED_TAG_NAME || 'ai-processed' %>"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="ai-processed">
-                                        <p class="text-sm text-gray-500">This tag will be added to documents after AI processing</p>
-                                    </div>
-                                </div>
-        
-                                <!-- Prompt Tags Section -->
-                                <div class="border-t pt-4 space-y-4">
-                                    <div class="space-y-2">
-                                        <label for="usePromptTags" class="text-sm font-medium">Use specific tags in prompt?</label>
-                                        <select id="usePromptTags" 
-                                                name="usePromptTags" 
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="no" <%= config.USE_PROMPT_TAGS === 'no' ? 'selected' : '' %>>No</option>
-                                            <option value="yes" <%= config.USE_PROMPT_TAGS === 'yes' ? 'selected' : '' %>>Yes</option>
-                                        </select>
-                                    </div>
-        
-                                    <div id="promptTagsSection" class="<%= config.USE_PROMPT_TAGS === 'yes' ? '' : 'hidden' %> space-y-4">
-                                        <div class="space-y-2">
-                                            <label for="promptTagInput" class="text-sm font-medium">Prompt Tags</label>
-                                            <div class="flex gap-2">
-                                                <input type="text" 
-                                                    id="promptTagInput" 
-                                                    class="flex-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                    placeholder="Enter a tag and press Enter">
-                                                <button type="button" 
-                                                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                                    <i class="fas fa-plus mr-2"></i>
-                                                    Add
-                                                </button>
-                                            </div>
-                                            <div id="promptTagsContainer" class="flex flex-wrap gap-2 mt-2">
-                                                <% if (config.PROMPT_TAGS && Array.isArray(config.PROMPT_TAGS) && config.PROMPT_TAGS.length > 0) { %>
-                                                    <% config.PROMPT_TAGS.forEach(tag => { %>
-                                                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center gap-2">
-                                                            <span><%= tag %></span>
-                                                            <button type="button" class="hover:text-blue-600"><i class="fas fa-times"></i></button>
-                                                        </div>
-                                                    <% }); %>
-                                                <% } %>
-                                            </div>
-                                            <input type="hidden" id="promptTags" name="promptTags" value="<%= Array.isArray(config.PROMPT_TAGS) ? config.PROMPT_TAGS.join(',') : '' %>">
-                                            <p class="text-sm text-gray-500">These tags will be exclusively used in the AI prompt</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr/>
-                                <!-- Limit Functions Section -->
-                                <section class="space-y-6">
-                                    <h2 class="text-xl font-bold flex items-center gap-2 text-primary mb-4">
-                                        <i class="fas fa-tasks"></i>
-                                        AI Function Limits
-                                    </h2>
-                                    <div class="space-y-4">
-                                        <div class="space-y-2">
-                                            <label class="text-sm font-medium">Enable/Disable AI Functions</label>
-                                            <p class="text-sm text-gray-500 mb-4">Select which functions the AI should perform during document analysis</p>
-                                            
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div class="border border-gray-200 shadow-sm rounded-lg hover:border-blue-500 transition-colors duration-200">
-                                                    <label for="activateTagging" class="flex items-center p-4 cursor-pointer w-full">
-                                                        <input type="checkbox" 
-                                                            id="activateTagging" 
-                                                            name="activateTagging" 
-                                                            class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                                            <%= config.ACTIVATE_TAGGING === 'yes' ? 'checked' : '' %>>
-                                                        <div class="ml-3">
-                                                            <div class="flex items-center text-gray-900 font-medium">
-                                                                <i class="fas fa-tags mr-2 text-blue-500"></i>
-                                                                Tags Assignment
-                                                            </div>
-                                                            <p class="text-sm text-gray-500 mt-1">Automatically assign relevant tags to documents</p>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="border border-gray-200 shadow-sm rounded-lg hover:border-blue-500 transition-colors duration-200">
-                                                    <label for="activateCorrespondents" class="flex items-center p-4 cursor-pointer w-full">
-                                                        <input type="checkbox" 
-                                                            id="activateCorrespondents" 
-                                                            name="activateCorrespondents" 
-                                                            class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                                            <%= config.ACTIVATE_CORRESPONDENTS === 'yes' ? 'checked' : '' %>>
-                                                        <div class="ml-3">
-                                                            <div class="flex items-center text-gray-900 font-medium">
-                                                                <i class="fas fa-user mr-2 text-blue-500"></i>
-                                                                Correspondent Detection
-                                                            </div>
-                                                            <p class="text-sm text-gray-500 mt-1">Identify document senders automatically</p>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="border border-gray-200 shadow-sm rounded-lg hover:border-blue-500 transition-colors duration-200">
-                                                    <label for="activateDocumentType" class="flex items-center p-4 cursor-pointer w-full">
-                                                        <input type="checkbox" 
-                                                            id="activateDocumentType" 
-                                                            name="activateDocumentType" 
-                                                            class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                                            <%= config.ACTIVATE_DOCUMENT_TYPE === 'yes' ? 'checked' : '' %>>
-                                                        <div class="ml-3">
-                                                            <div class="flex items-center text-gray-900 font-medium">
-                                                                <i class="fas fa-file-alt mr-2 text-blue-500"></i>
-                                                                Document Type Classification
-                                                            </div>
-                                                            <p class="text-sm text-gray-500 mt-1">Determine the type of document automatically</p>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="border border-gray-200 shadow-sm rounded-lg hover:border-blue-500 transition-colors duration-200">
-                                                    <label for="activateTitle" class="flex items-center p-4 cursor-pointer w-full">
-                                                        <input type="checkbox" 
-                                                            id="activateTitle" 
-                                                            name="activateTitle" 
-                                                            class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                                            <%= config.ACTIVATE_TITLE === 'yes' ? 'checked' : '' %>>
-                                                        <div class="ml-3">
-                                                            <div class="flex items-center text-gray-900 font-medium">
-                                                                <i class="fas fa-heading mr-2 text-blue-500"></i>
-                                                                Title Generation
-                                                            </div>
-                                                            <p class="text-sm text-gray-500 mt-1">Generate meaningful titles for documents</p>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                                <!-- Custom Fields Section -->
-                                <section class="space-y-6">
-                                    <h2 class="text-xl font-bold flex items-center gap-2 text-primary mb-4">
-                                        <i class="fas fa-table text-blue-500"></i>
-                                        Custom Fields
-                                    </h2>
-                                    <div class="space-y-4">
-                                        <div id="customFieldsList" class="space-y-2">
-                                            <% if (config.CUSTOM_FIELDS && Array.isArray(JSON.parse(config.CUSTOM_FIELDS).custom_fields)) { %>
-                                                <% JSON.parse(config.CUSTOM_FIELDS).custom_fields.forEach((field, index) => { %>
-                                                    <div class="custom-field-item flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-colors">
-                                                        <div class="cursor-move text-gray-400">
-                                                            <i class="fas fa-grip-vertical"></i>
-                                                        </div>
-                                                        <div class="flex-1">
-                                                            <p class="font-medium text-gray-900 dark:text-gray-100"><%= field.value %></p>
-                                                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                                Type: <%= field.data_type %>
-                                                                <% if (field.data_type === 'monetary' && field.currency) { %>
-                                                                    (<%= field.currency %>)
-                                                                <% } %>
-                                                            </p>
-                                                        </div>
-                                                        <button type="button" 
-                                                                onclick="removeCustomField(this)"
-                                                                class="text-gray-400 hover:text-red-500 transition-colors">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                <% }); %>
-                                            <% } %>
-                                        </div>
-
-                                        <div class="grid grid-cols-12 gap-3">
-                                            <div class="col-span-5">
-                                                <input type="text" 
-                                                    id="newFieldName" 
-                                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" 
-                                                    placeholder="Enter field name...">
-                                            </div>
-                                            
-                                            <div class="col-span-3">
-                                                <select id="newFieldType" 
-                                                        onchange="toggleCurrencySelect()"
-                                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-                                                    <option value="string">Text</option>
-                                                    <option value="float">Number</option>
-                                                    <option value="integer">Integer</option>
-                                                    <option value="monetary">Currency</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-span-2">
-                                                <select id="currencyCode" 
-                                                        class="hidden w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-                                                    <option value="EUR">EUR</option>
-                                                    <option value="USD">USD</option>
-                                                    <option value="GBP">GBP</option>
-                                                    <option value="JPY">JPY</option>
-                                                    <option value="CHF">CHF</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-span-2">
-                                                <button type="button" 
-                                                        onclick="addCustomField()"
-                                                        class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2">
+                                                <button type="button" class="material-button add-tag-btn">
                                                     <i class="fas fa-plus"></i>
                                                     Add
                                                 </button>
                                             </div>
+                                            <div id="tagsContainer" class="tags-container">
+                                                <% if (config.TAGS && Array.isArray(config.TAGS) && config.TAGS.length > 0) { %>
+                                                <% config.TAGS.forEach(tag=> { %>
+                                                <div class="modern-tag">
+                                                    <span><%= tag %></span>
+                                                    <button type="button"><i class="fas fa-times"></i></button>
+                                                </div>
+                                                <% }); %>
+                                                <% } %>
+                                            </div>
+                                            <input type="hidden" id="tags" name="tags"
+                                                value="<%= Array.isArray(config.TAGS) ? config.TAGS.join(',') : '' %>">
                                         </div>
-
-                                        <input type="hidden" id="customFieldsJson" name="customFields" value='<%= config.CUSTOM_FIELDS || "{\"custom_fields\":[]}" %>'>
                                     </div>
-                                </section>
-                                <!-- System Prompt Section -->
+                                </div>
+
+                                <!-- AI Tag Section -->
                                 <div class="border-t pt-4 space-y-4">
-                                    <div class="space-y-2">
-                                        <label for="systemPrompt" class="text-sm font-medium">Prompt Description</label>
-                                        <div class="space-y-2">
-                                            <textarea id="systemPrompt" 
-                                                      name="systemPrompt"
-                                                      rows="8"
-                                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                      placeholder="Describe how the AI should analyze your documents..."><%= config.SYSTEM_PROMPT %></textarea>
-                                            <button id="systemPromptBtn" type="button" 
-                                                    class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                                                <i class="fas fa-lightbulb mr-2"></i>
-                                                Example
-                                            </button>
+                                    <div class="form-group">
+                                        <label for="aiProcessedTag">Add AI-processed tag to documents?</label>
+                                        <select id="aiProcessedTag" name="aiProcessedTag" class="modern-input">
+                                            <option value="no" <%= config.ADD_AI_PROCESSED_TAG === 'no' ? 'selected' : '' %>>No
+                                            </option>
+                                            <option value="yes" <%= config.ADD_AI_PROCESSED_TAG === 'yes' ? 'selected' : '' %>>Yes</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="aiTagNameSection"
+                                        class="<%= config.ADD_AI_PROCESSED_TAG === 'yes' ? '' : 'hidden' %> space-y-4">
+                                        <div class="form-group">
+                                            <label for="aiTagName">AI-processed Tag Name</label>
+                                            <input type="text" id="aiTagName" name="aiTagName"
+                                                value="<%= config.AI_PROCESSED_TAG_NAME || 'ai-processed' %>"
+                                                class="modern-input" placeholder="ai-processed">
+                                            <p class="help-text">This tag will be added to documents after AI
+                                                processing</p>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- Prompt Tags Section -->
+                                <div class="border-t pt-4 space-y-4">
+                                    <div class="form-group">
+                                        <label for="usePromptTags">Use specific tags in prompt?</label>
+                                        <select id="usePromptTags" name="usePromptTags" class="modern-input">
+                                            <option value="no" <%= config.USE_PROMPT_TAGS === 'no' ? 'selected' : '' %>>No
+                                            </option>
+                                            <option value="yes" <%= config.USE_PROMPT_TAGS === 'yes' ? 'selected' : '' %>>Yes</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="promptTagsSection"
+                                        class="<%= config.USE_PROMPT_TAGS === 'yes' ? '' : 'hidden' %> space-y-4">
+                                        <div class="form-group">
+                                            <label for="promptTagInput">Prompt Tags</label>
+                                            <div class="tag-input-container">
+                                                <input type="text" id="promptTagInput"
+                                                    class="modern-input flex-1"
+                                                    placeholder="Enter a tag and press Enter">
+                                                <button type="button" class="material-button add-prompt-tag-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                    Add
+                                                </button>
+                                            </div>
+                                            <div id="promptTagsContainer" class="tags-container">
+                                                <% if (config.PROMPT_TAGS && Array.isArray(config.PROMPT_TAGS) &&
+                                                    config.PROMPT_TAGS.length> 0) { %>
+                                                <% config.PROMPT_TAGS.forEach(tag=> { %>
+                                                <div class="modern-tag">
+                                                    <span><%= tag %></span>
+                                                    <button type="button"><i class="fas fa-times"></i></button>
+                                                </div>
+                                                <% }); %>
+                                                <% } %>
+                                            </div>
+                                            <input type="hidden" id="promptTags" name="promptTags"
+                                                value="<%= Array.isArray(config.PROMPT_TAGS) ? config.PROMPT_TAGS.join(',') : '' %>">
+                                            <p class="help-text">These tags will be exclusively used in the AI
+                                                prompt</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+
+                                <div class="form-group">
+                                    <label for="systemPrompt">Prompt Description</label>
+                                    <div class="prompt-container">
+                                        <textarea id="systemPrompt" name="systemPrompt" rows="8"
+                                            class="modern-input flex-1"
+                                            placeholder="Describe how the AI should analyze your documents..."><%= config.SYSTEM_PROMPT %></textarea>
+                                        <button type="button" id="systemPromptBtn" class="material-button">
+                                            <i class="fas fa-lightbulb"></i>
+                                            Example
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </section>
-        
+
                         <!-- Submit Button -->
                         <div class="border-t pt-6">
-                            <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2">
+                            <button type="submit" class="material-button submit-btn">
                                 <i class="fas fa-save"></i>
                                 Save Configuration
                             </button>
@@ -614,20 +416,20 @@
         </main>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const apiKeyContainer = document.getElementById('apiKeyContainer');
             const copyNotification = document.getElementById('copyNotification');
             let timeoutId;
-        
-            apiKeyContainer.addEventListener('click', async function() {
+
+            apiKeyContainer.addEventListener('click', async function () {
                 const apiKey = this.dataset.apiKey;
                 try {
                     await navigator.clipboard.writeText(apiKey);
-                    
+
                     // Show notification
                     copyNotification.classList.remove('hidden');
                     copyNotification.classList.add('flex');
-                    
+
                     // Hide notification after 2 seconds
                     clearTimeout(timeoutId);
                     timeoutId = setTimeout(() => {
@@ -638,159 +440,18 @@
                     console.error('Failed to copy text: ', err);
                 }
             });
-        
+
             // Optional: Re-blur when mouse leaves
-            apiKeyContainer.addEventListener('mouseleave', function() {
+            apiKeyContainer.addEventListener('mouseleave', function () {
                 this.classList.add('blur-sm');
             });
-        
-            apiKeyContainer.addEventListener('mouseenter', function() {
+
+            apiKeyContainer.addEventListener('mouseenter', function () {
                 this.classList.remove('blur-sm');
             });
         });
     </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const apiKeyContainer = document.getElementById('apiKeyContainer');
-        const copyNotification = document.getElementById('copyNotification');
-        const regenerateBtn = document.getElementById('regenerateBtn');
-        const regenerateIcon = document.getElementById('regenerateIcon');
-        let timeoutId;
-    
-        function showNotification(message, isError = false) {
-            const notificationBox = copyNotification;
-            const icon = notificationBox.querySelector('i');
-            const text = notificationBox.querySelector('span');
-    
-            // Reset classes
-            notificationBox.className = 'absolute right-0 top-0 mt-12 w-64 rounded-lg p-3 border';
-            icon.className = 'mr-2 fas';
-    
-            if (isError) {
-                notificationBox.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
-                icon.classList.add('fa-exclamation-circle');
-            } else {
-                notificationBox.classList.add('bg-green-50', 'text-green-800', 'border-green-200');
-                icon.classList.add('fa-check-circle');
-            }
-    
-            text.textContent = message;
-            notificationBox.classList.remove('hidden');
-            notificationBox.classList.add('flex');
-    
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                notificationBox.classList.add('hidden');
-                notificationBox.classList.remove('flex');
-            }, 2000);
-        }
-    
-        // Copy functionality
-        apiKeyContainer.addEventListener('click', async function() {
-            try {
-                await navigator.clipboard.writeText(this.dataset.apiKey);
-                showNotification('API key copied to clipboard!');
-            } catch (err) {
-                showNotification('Failed to copy API key!', true);
-            }
-        });
-    
-        // Blur functionality
-        apiKeyContainer.addEventListener('mouseleave', function() {
-            this.classList.add('blur-sm');
-        });
-    
-        apiKeyContainer.addEventListener('mouseenter', function() {
-            this.classList.remove('blur-sm');
-        });
-    
-        // Regenerate Button functionality
-        regenerateBtn.addEventListener('click', async function() {
-            this.disabled = true;
-            regenerateIcon.classList.add('animate-spin');
-    
-            try {
-                const response = await fetch('/api/key-regenerate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-    
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Wait 5 seconds
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-                    
-                    // Update key container
-                    apiKeyContainer.textContent = data.newKey;
-                    apiKeyContainer.dataset.apiKey = data.newKey;
-                    apiKeyContainer.title = data.newKey;
-                    
-                    showNotification('New API key generated!');
-                } else {
-                    throw new Error('Failed to regenerate key');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showNotification('Failed to regenerate API key!', true);
-            } finally {
-                regenerateBtn.disabled = false;
-                regenerateIcon.classList.remove('animate-spin');
-            }
-        });
-    });
-    </script>
-    <!-- Füge dies direkt vor dem schließenden </body> Tag ein -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuButton = document.getElementById('mobileMenuButton');
-            const sidebar = document.querySelector('.sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
-            function toggleSidebar(event) {
-                event.stopPropagation(); // Prevent event bubbling
-                sidebar.classList.toggle('active');
-                sidebarOverlay.classList.toggle('active');
-                
-                // Toggle menu icon
-                const icon = mobileMenuButton.querySelector('i');
-                if (sidebar.classList.contains('active')) {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                } else {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            }
-
-            // Toggle sidebar when clicking the menu button
-            mobileMenuButton.addEventListener('click', toggleSidebar);
-
-            // Close sidebar when clicking the overlay
-            sidebarOverlay.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent event bubbling
-                if (sidebar.classList.contains('active')) {
-                    toggleSidebar(event);
-                }
-            });
-
-            // Prevent sidebar from closing when clicking inside it
-            sidebar.addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-
-            // Handle links in sidebar
-            const sidebarLinks = document.querySelectorAll('.sidebar-link');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
-                    // Don't prevent default here to allow navigation
-                    event.stopPropagation();
-                });
-            });
-        });
-    </script>
-    <script src="js/settings.js"></script>
+    <script src="js/setup.js"></script>
 </body>
+
 </html>
