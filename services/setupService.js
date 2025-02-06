@@ -49,7 +49,7 @@ class SetupService {
                 messages: [{ role: "user", content: "Test" }],
             });
             const now = new Date();
-            const timestamp = now.toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' });
+            const timestamp = now.toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' });
             console.log(`[DEBUG] [${timestamp}] OpenAI request sent`);
             return response.choices && response.choices.length > 0;
         } catch (error) {
