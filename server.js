@@ -12,6 +12,12 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const Logger = require('./services/loggerService');
 
+const setupRoutes = require('./routes/setup');
+    const summaryRoutes = require('./routes/summary'); // Import summary routes
+    const cors = require('cors');
+    app.use('/', setupRoutes);
+    app.use('/', summaryRoutes); // Use summary routes
+
 const htmlLogger = new Logger({
     logFile: 'logs.html',
     format: 'html',
