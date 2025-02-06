@@ -1,3 +1,5 @@
+//public/js/history.js:
+
 // Theme Management
 class ThemeManager {
     constructor() {
@@ -6,15 +8,19 @@ class ThemeManager {
     }
 
     initialize() {
+        // Load saved theme or default to light
         const savedTheme = localStorage.getItem('theme') || 'light';
         this.setTheme(savedTheme);
-        this.themeToggle?.addEventListener('click', () => this.toggleTheme());
+        // add themeToggle if it exists to ensure it doesn't error out
+        if (this.themeToggle) {
+            this.themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
     }
 
     setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
-        const icon = this.themeToggle.querySelector('i');
+        const icon = this.themeToggle?.querySelector('i');
         if (icon) {
             icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
         }
@@ -37,14 +43,20 @@ class HistoryManager {
     }
 
     initialize() {
-        this.table = this.initializeDataTable();
-        this.initializeModals();
-        this.initializeResetButtons();
-        this.initializeFilters();
-        this.initializeSelectAll();
+        try {
+          this.table = this.initializeDataTable();
+          this.initializeModals();
+          this.initializeResetButtons();
+          this.initializeFilters();
+          this.initializeSelectAll();
+        } catch (error) {
+            console.error('[ERROR] initializing HistoryManager:', error);
+            // Handle errors during initialization
+        }
     }
 
     initializeDataTable() {
+      try {
         return $('#historyTable').DataTable({
             serverSide: true,
             processing: true,
@@ -126,9 +138,14 @@ class HistoryManager {
                 this.attachCheckboxListeners();
             }
         });
+    }  catch (error) {
+      console.error('[ERROR] Initializing datatable', error);
+      return null;
+    }
     }
 
     initializeModals() {
+      try {
         // Modal close handlers
         [this.confirmModal, this.confirmModalAll].forEach(modal => {
             if (!modal) return;
@@ -172,55 +189,76 @@ class HistoryManager {
                 this.hideModal(this.confirmModalAll);
             }
         });
+      }  catch (error) {
+        console.error('[ERROR] Initializing Modals', error);
+    }
     }
 
     initializeResetButtons() {
-        // Reset Selected button
-        document.getElementById('resetSelectedBtn')?.addEventListener('click', () => {
-            const selectedDocs = this.getSelectedDocuments();
-            if (selectedDocs.length === 0) {
-                alert('Please select at least one document to reset.');
-                return;
-            }
-            this.showModal(this.confirmModal);
-        });
+        try {
+            // Reset Selected button
+            document.getElementById('resetSelectedBtn')?.addEventListener('click', () => {
+                const selectedDocs = this.getSelectedDocuments();
+                if (selectedDocs.length === 0) {
+                    alert('Please select at least one document to reset.');
+                    return;
+                }
+                this.showModal(this.confirmModal);
+            });
 
-        // Reset All button
-        document.getElementById('resetAllBtn')?.addEventListener('click', () => {
-            this.showModal(this.confirmModalAll);
-        });
+            // Reset All button
+            document.getElementById('resetAllBtn')?.addEventListener('click', () => {
+                this.showModal(this.confirmModalAll);
+            });
+        } catch (error) {
+            console.error('[ERROR] Initializing Reset Buttons', error);
+        }
     }
 
     initializeFilters() {
-        $('#tagFilter, #correspondentFilter').on('change', () => {
-            this.table.ajax.reload();
-        });
+        try {
+            $('#tagFilter, #correspondentFilter').on('change', () => {
+                if (this.table) {
+                    this.table.ajax.reload();
+                }
+            });
+        } catch (error) {
+            console.error('[ERROR] Initializing Filters', error);
+        }
     }
 
     initializeSelectAll() {
         if (!this.selectAll) return;
 
-        // Handle "Select All" checkbox
-        this.selectAll.addEventListener('change', () => {
-            const isChecked = this.selectAll.checked;
-            const checkboxes = document.querySelectorAll('.doc-select');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
+        try {
+            // Handle "Select All" checkbox
+            this.selectAll.addEventListener('change', () => {
+                const isChecked = this.selectAll.checked;
+                const checkboxes = document.querySelectorAll('.doc-select');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                });
             });
-        });
 
-        // Initial state check
-        this.updateSelectAllState();
+            // Initial state check
+            this.updateSelectAllState();
+        } catch (error) {
+            console.error('[ERROR] Initializing Select All', error);
+        }
     }
 
     attachCheckboxListeners() {
-        const checkboxes = document.querySelectorAll('.doc-select');
-        checkboxes.forEach(checkbox => {
-            // Remove existing listeners to prevent duplicates
-            checkbox.removeEventListener('change', this.handleCheckboxChange);
-            // Add new listener
-            checkbox.addEventListener('change', () => this.handleCheckboxChange());
-        });
+        try {
+            const checkboxes = document.querySelectorAll('.doc-select');
+            checkboxes.forEach(checkbox => {
+                // Remove existing listeners to prevent duplicates
+                checkbox.removeEventListener('change', this.handleCheckboxChange);
+                // Add new listener
+                checkbox.addEventListener('change', () => this.handleCheckboxChange());
+            });
+        } catch (error) {
+            console.error('[ERROR] Attaching checkbox listeners', error);
+        }
     }
 
     handleCheckboxChange() {
@@ -230,14 +268,18 @@ class HistoryManager {
     updateSelectAllState() {
         if (!this.selectAll) return;
 
-        const checkboxes = document.querySelectorAll('.doc-select');
-        const checkedBoxes = document.querySelectorAll('.doc-select:checked');
-        
-        // Update "Select All" checkbox state
-        this.selectAll.checked = checkboxes.length > 0 && checkboxes.length === checkedBoxes.length;
-        
-        // Update indeterminate state
-        this.selectAll.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < checkboxes.length;
+        try {
+            const checkboxes = document.querySelectorAll('.doc-select');
+            const checkedBoxes = document.querySelectorAll('.doc-select:checked');
+
+            // Update "Select All" checkbox state
+            this.selectAll.checked = checkboxes.length > 0 && checkboxes.length === checkedBoxes.length;
+
+            // Update indeterminate state
+            this.selectAll.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < checkboxes.length;
+        } catch (error) {
+            console.error('[ERROR] Updating select all state', error);
+        }
     }
 
     showModal(modal) {
@@ -255,8 +297,13 @@ class HistoryManager {
     }
 
     getSelectedDocuments() {
-        return Array.from(document.querySelectorAll('.doc-select:checked'))
-            .map(checkbox => checkbox.value);
+        try {
+            return Array.from(document.querySelectorAll('.doc-select:checked'))
+                .map(checkbox => checkbox.value);
+        } catch (error) {
+            console.error('[ERROR] Getting selected documents', error);
+            return [];
+        }
     }
 
     async resetDocuments(ids) {
@@ -271,7 +318,9 @@ class HistoryManager {
                 throw new Error('Failed to reset documents');
             }
 
-            await this.table.ajax.reload();
+            if (this.table) {
+                await this.table.ajax.reload();
+            }
             return true;
         } catch (error) {
             console.error('Error resetting documents:', error);
@@ -291,7 +340,9 @@ class HistoryManager {
                 throw new Error('Failed to reset all documents');
             }
 
-            await this.table.ajax.reload();
+            if (this.table) {
+                await this.table.ajax.reload();
+            }
             return true;
         } catch (error) {
             console.error('Error resetting all documents:', error);
