@@ -98,6 +98,20 @@ module.exports = {
         activateDocumentType: limitFunctions.activateDocumentType,
         activateTitle: limitFunctions.activateTitle
     },
+    legal: {
+    nerModel: process.env.LEGAL_NER_MODEL || 'some/legal-ner-model',
+    relationshipExtractionModel: process.env.LEGAL_RELATIONSHIP_MODEL || 'some/legal-relation-model'
+  },
+   limitFunctions: {
+    // Add limit functions to config
+    activateTagging: limitFunctions.activateTagging,
+    activateCorrespondents: limitFunctions.activateCorrespondents,
+    activateDocumentType: limitFunctions.activateDocumentType,
+    activateTitle: limitFunctions.activateTitle,
+    activateLegalNER: limitFunctions.activateLegalNER, // added function
+    activateRelationshipExtraction: limitFunctions.activateRelationshipExtraction, // added function
+    activateClauseIdentification: limitFunctions.activateClauseIdentification // added function
+  },
     specialPromptPreDefinedTags: `You are a document analysis AI. You will analyze the document. 
   You take the main information to associate tags with the document. 
   You will also find the correspondent of the document (Sender not reciever). Also you find a meaningful and short title for the document.
