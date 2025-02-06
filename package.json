@@ -1,37 +1,31 @@
 {
   "name": "paperless-ai",
   "version": "1.0.0",
-  "description": "AI based Tag, correspondent and meta data generation",
+  "description": "AI based Tag, correspondent and meta data generation for Paperless-ngx",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "lint": "eslint . --ext .js,.mjs",
+    "lint:fix": "eslint . --ext .js,.mjs --fix",
+    "format": "prettier --write ."
   },
   "keywords": [
     "paperless-ngx",
     "ai",
     "paperless",
     "artificial",
-    "intelligence"
+    "intelligence",
+    "document management",
+    "automation"
   ],
-  "nodemonConfig": {
-    "ignore": [
-      "test/*",
-      "docs/*",
-      "node_modules/*",
-      ".git/*",
-      "*.log",
-      "public/*",
-      "views/*",
-      "document.json"
-    ]
-  },
   "author": "Clusterzx",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.7.8",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^11.6.0",
-    "body-parser": "^1.20.3",
     "cheerio": "^1.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -41,7 +35,6 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "node-cron": "^3.0.3",
-    "nodemon": "^3.1.7",
     "openai": "^4.73.1",
     "sqlite3": "^5.1.7",
     "tiktoken": "^1.0.18"
@@ -50,7 +43,21 @@
     "@eslint/js": "^9.17.0",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
     "globals": "^15.14.0",
     "prettier": "^3.4.2"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*",
+      "node_modules/*",
+      ".git/*",
+      "*.log",
+      "public/*",
+      "views/*",
+      "data/*"
+    ],
+    "ext": "js,mjs,json,ejs"
   }
 }
