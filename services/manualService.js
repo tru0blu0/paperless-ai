@@ -1,7 +1,9 @@
+// manualService.js
 const axios = require('axios');
 const OpenAI = require('openai');
 const config = require('../config/config');
 const os = require('os'); // Import the 'os' module
+const AIServiceFactory = require('../services/aiServiceFactory');
 
 class ManualService {
     constructor() {
@@ -24,16 +26,26 @@ class ManualService {
             // Use the provider passed in, or default to the configured AI provider
             const effectiveProvider = provider || this.aiProvider;
 
+            let analysisResult;
             switch (effectiveProvider) {
                 case 'openai':
-                    return await this._analyzeOpenAI(content, existingTags);
+                    analysisResult = await this._analyzeOpenAI(content, existingTags);
+                    break;
                 case 'ollama':
-                    return await this._analyzeOllama(content, existingTags);
+                    analysisResult = await this._analyzeOllama(content, existingTags);
+                    break;
                 case 'custom':
-                    return await this._analyzeCustom(content, existingTags);
+                    analysisResult = await this._analyzeCustom(content, existingTags);
+                    break;
                 default:
                     throw new Error(`Invalid provider: ${effectiveProvider}`);
             }
+
+            // Enrich analysis with legal NER, Relationship extraction and clause identification
+            const enrichedAnalysis = await AIServiceFactory.enrichAnalysis(analysisResult, content);
+
+            return enrichedAnalysis;
+
         } catch (error) {
             console.error('Error analyzing document:', error);
             return { tags: [], correspondent: null }; // Return a default object in case of error
