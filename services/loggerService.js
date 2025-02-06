@@ -9,54 +9,7 @@ class Logger {
         this.timestamp = options.timestamp !== false;
         this.format = options.format || 'txt';
         this.maxFileSize = options.maxFileSize || 1024 * 1024 * 10; // Standard: 10MB
-        
-        if (!fs.existsSync(this.logDir)) {
-            fs.mkdirSync(this.logDir, { recursive: true });
-        }
-
-        this.logPath = path.join(this.logDir, this.logFile);
-        
-        // Initialisiere Log-Datei
-        this.initLogFile();
-
-        this.originalConsole = {
-            log: console.log,
-            error: console.error,
-            warn: console.warn,
-            info: console.info,
-            debug: console.debug
-        };
-
-        this.overrideConsoleMethods();
-    }
-
-    initLogFile() {
-        // Prüfe ob die Datei die maximale Größe überschreitet
-        if (this.checkFileSize()) {
-            // Lösche die alte Datei
-            try {
-                fs.unlinkSync(this.logPath);
-            } catch (error) {
-                // Ignoriere Fehler wenn Datei nicht existiert
-            }
-        }
-
-        // Initialisiere HTML-Datei wenn nötig
-        if (this.format === 'html') {
-            this.initHtmlFile();
-        }
-    }
-
-    checkFileSize() {
-        if (fs.existsSync(this.logPath)) {
-            const stats = fs.statSync(this.logPath);
-            return stats.size >= this.maxFileSize;
-        }
-        return false;
-    }
-
-    initHtmlFile() {
-        const htmlHeader = `
+        this.htmlHeader = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -133,9 +86,70 @@ class Logger {
 <body>
     <div class="log-container">
 `;
-        
-        if (!fs.existsSync(this.logPath) || fs.statSync(this.logPath).size === 0) {
-            fs.writeFileSync(this.logPath, htmlHeader);
+        this.htmlFooter = `    </div>
+    <button class="auto-scroll" id="autoScrollBtn" onclick="toggleAutoScroll()">
+        Auto-Scroll: ON
+    </button>
+</body>
+</html>`;
+
+        if (!fs.existsSync(this.logDir)) {
+            fs.mkdirSync(this.logDir, { recursive: true });
+        }
+
+        this.logPath = path.join(this.logDir, this.logFile);
+
+        // Initialisiere Log-Datei
+        this.initLogFile();
+
+        this.originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info,
+            debug: console.debug
+        };
+
+        this.overrideConsoleMethods();
+    }
+
+    initLogFile() {
+        try {
+            // Prüfe ob die Datei die maximale Größe überschreitet
+            if (this.checkFileSize()) {
+                // Lösche die alte Datei
+                fs.unlinkSync(this.logPath);
+            }
+        } catch (error) {
+            console.warn(`[WARNING] Error during log file initialization (deletion): ${error.message}`);
+        }
+
+        // Initialisiere HTML-Datei wenn nötig
+        if (this.format === 'html') {
+            this.initHtmlFile();
+        }
+    }
+
+    checkFileSize() {
+        try {
+            if (fs.existsSync(this.logPath)) {
+                const stats = fs.statSync(this.logPath);
+                return stats.size >= this.maxFileSize;
+            }
+            return false;
+        } catch (error) {
+            console.error(`[ERROR] Error checking file size: ${error.message}`);
+            return false;
+        }
+    }
+
+    initHtmlFile() {
+        try {
+            if (!fs.existsSync(this.logPath) || fs.statSync(this.logPath).size === 0) {
+                fs.writeFileSync(this.logPath, this.htmlHeader);
+            }
+        } catch (error) {
+            console.error(`[ERROR] Error initializing HTML file: ${error.message}`);
         }
     }
 
@@ -146,7 +160,7 @@ class Logger {
     formatLogMessage(type, args) {
         const msg = util.format(...args);
         if (this.format === 'html') {
-            const timestamp = this.timestamp ? 
+            const timestamp = this.timestamp ?
                 `<span class="timestamp">[${this.getTimestamp()}]</span>` : '';
             return `    <div class="log-entry">
         ${timestamp}
@@ -154,7 +168,7 @@ class Logger {
         <span class="message">${this.escapeHtml(msg)}</span>
     </div>\n`;
         } else {
-            return this.timestamp ? 
+            return this.timestamp ?
                 `[${this.getTimestamp()}] [${type.toUpperCase()}] ${msg}\n` :
                 `[${type.toUpperCase()}] ${msg}\n`;
         }
@@ -162,28 +176,32 @@ class Logger {
 
     escapeHtml(unsafe) {
         return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;")
+            .replace(/&/g, "&")
+            .replace(/</g, "<")
+            .replace(/>/g, ">")
+            .replace(/"/g, """)
+            .replace(/'/g, "'")
             .replace(/\n/g, "<br>")
-            .replace(/\s/g, "&nbsp;");
+            .replace(/\s/g, " ");
     }
 
     writeToFile(message) {
-        // Prüfe Dateigröße vor dem Schreiben
-        if (this.checkFileSize()) {
-            // Lösche die alte Datei
-            fs.unlinkSync(this.logPath);
-            
-            // Bei HTML-Format müssen wir den Header neu schreiben
-            if (this.format === 'html') {
-                this.initHtmlFile();
+        try {
+            // Prüfe Dateigröße vor dem Schreiben
+            if (this.checkFileSize()) {
+                // Lösche die alte Datei
+                fs.unlinkSync(this.logPath);
+
+                // Bei HTML-Format müssen wir den Header neu schreiben
+                if (this.format === 'html') {
+                    this.initHtmlFile();
+                }
             }
+
+            fs.appendFileSync(this.logPath, message);
+        } catch (error) {
+            console.error(`[ERROR] Error writing to log file: ${error.message}`);
         }
-        
-        fs.appendFileSync(this.logPath, message);
     }
 
     overrideConsoleMethods() {
@@ -220,13 +238,11 @@ class Logger {
 
     closeHtmlFile() {
         if (this.format === 'html') {
-            const htmlFooter = `    </div>
-    <button class="auto-scroll" id="autoScrollBtn" onclick="toggleAutoScroll()">
-        Auto-Scroll: ON
-    </button>
-</body>
-</html>`;
-            this.writeToFile(htmlFooter);
+            try {
+                this.writeToFile(this.htmlFooter);
+            } catch (error) {
+                console.error(`[ERROR] Error closing HTML file: ${error.message}`);
+            }
         }
     }
 
