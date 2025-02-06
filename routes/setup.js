@@ -1,5 +1,3 @@
-//routes/setup.js:
-
 const express = require('express');
 const router = express.Router();
 const setupService = require('../services/setupService.js');
