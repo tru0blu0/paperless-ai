@@ -1,3 +1,5 @@
+//pubic/js/setup.js:
+
 // Theme Management
 class ThemeManager {
     constructor() {
@@ -9,7 +11,7 @@ class ThemeManager {
         // Load saved theme or default to light
         const savedTheme = localStorage.getItem('theme') || 'light';
         this.setTheme(savedTheme);
-        
+
         // Add event listener for theme toggle
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
     }
@@ -17,7 +19,7 @@ class ThemeManager {
     setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
-        
+
         // Update toggle button icon
         const icon = this.themeToggle.querySelector('i');
         icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
@@ -45,24 +47,24 @@ class FormManager {
     initialize() {
         // Initialize provider settings
         this.toggleProviderSettings();
-        
+
         // Initialize tags section
         this.toggleTagsInput();
-        
+
         // Add event listeners
         this.aiProvider.addEventListener('change', () => this.toggleProviderSettings());
         this.showTags.addEventListener('change', () => this.toggleTagsInput());
         this.aiProcessedTag.addEventListener('change', () => this.toggleAiTagInput());
         this.usePromptTags.addEventListener('change', () => this.togglePromptTagsInput());
-        
+
         // Initialize password toggles
         this.initializePasswordToggles();
 
         // Initial state for prompt elements based on usePromptTags
-        if (this.usePromptTags.value === 'yes') {
+        if (this.usePromptTags && this.usePromptTags.value === 'yes') {
             this.disablePromptElements();
         }
-        
+
         // Initialize new sections
         this.toggleAiTagInput();
         this.togglePromptTagsInput();
@@ -73,7 +75,7 @@ class FormManager {
         const openaiSettings = document.getElementById('openaiSettings');
         const ollamaSettings = document.getElementById('ollamaSettings');
         const customSettings = document.getElementById('customSettings');
-        
+
         // Get all required fields
         const openaiKey = document.getElementById('openaiKey');
         const ollamaUrl = document.getElementById('ollamaUrl');
@@ -81,36 +83,36 @@ class FormManager {
         const customBaseUrl = document.getElementById('customBaseUrl');
         const customApiKey = document.getElementById('customApiKey');
         const customModel = document.getElementById('customModel');
-        
+
         // Hide all settings first
         openaiSettings.style.display = 'none';
         ollamaSettings.style.display = 'none';
         customSettings.style.display = 'none';
-        
+
         // Reset all required attributes
-        openaiKey.required = false;
-        ollamaUrl.required = false;
-        ollamaModel.required = false;
-        customBaseUrl.required = false;
-        customApiKey.required = false;
-        customModel.required = false;
-        
+        if(openaiKey) openaiKey.required = false;
+        if(ollamaUrl) ollamaUrl.required = false;
+        if(ollamaModel) ollamaModel.required = false;
+        if(customBaseUrl) customBaseUrl.required = false;
+        if(customApiKey) customApiKey.required = false;
+        if(customModel) customModel.required = false;
+
         // Show and set required fields based on selected provider
         switch (provider) {
             case 'openai':
-                openaiSettings.style.display = 'block';
-                openaiKey.required = true;
+                if(openaiSettings) openaiSettings.style.display = 'block';
+                if(openaiKey) openaiKey.required = true;
                 break;
             case 'ollama':
-                ollamaSettings.style.display = 'block';
-                ollamaUrl.required = true;
-                ollamaModel.required = true;
+                if(ollamaSettings) ollamaSettings.style.display = 'block';
+                if(ollamaUrl) ollamaUrl.required = true;
+                if(ollamaModel) ollamaModel.required = true;
                 break;
             case 'custom':
-                customSettings.style.display = 'block';
-                customBaseUrl.required = true;
-                customApiKey.required = true;
-                customModel.required = true;
+                if(customSettings) customSettings.style.display = 'block';
+                if(customBaseUrl) customBaseUrl.required = true;
+                if(customApiKey) customApiKey.required = true;
+                if(customModel) customModel.required = true;
                 break;
         }
     }
@@ -118,7 +120,7 @@ class FormManager {
     toggleTagsInput() {
         const showTags = this.showTags.value;
         const tagsInputSection = document.getElementById('tagsInputSection');
-        
+
         if (showTags === 'yes') {
             tagsInputSection.classList.remove('hidden');
         } else {
@@ -129,7 +131,7 @@ class FormManager {
     toggleAiTagInput() {
         const showAiTag = this.aiProcessedTag.value;
         const aiTagNameSection = document.getElementById('aiTagNameSection');
-        
+
         if (showAiTag === 'yes') {
             aiTagNameSection.classList.remove('hidden');
         } else {
@@ -140,7 +142,7 @@ class FormManager {
     togglePromptTagsInput() {
         const usePromptTags = this.usePromptTags.value;
         const promptTagsSection = document.getElementById('promptTagsSection');
-        
+
         if (usePromptTags === 'yes') {
             promptTagsSection.classList.remove('hidden');
             this.disablePromptElements();
@@ -151,17 +153,17 @@ class FormManager {
     }
 
     disablePromptElements() {
-        this.systemPrompt.disabled = true;
-        this.systemPromptBtn.disabled = true;
-        this.systemPrompt.classList.add('disabled');
-        this.systemPromptBtn.classList.add('disabled');
+        if(this.systemPrompt) this.systemPrompt.disabled = true;
+        if(this.systemPromptBtn) this.systemPromptBtn.disabled = true;
+        if(this.systemPrompt) this.systemPrompt.classList.add('disabled');
+        if(this.systemPromptBtn) this.systemPromptBtn.classList.add('disabled');
     }
 
     enablePromptElements() {
-        this.systemPrompt.disabled = false;
-        this.systemPromptBtn.disabled = false;
-        this.systemPrompt.classList.remove('disabled');
-        this.systemPromptBtn.classList.remove('disabled');
+        if(this.systemPrompt) this.systemPrompt.disabled = false;
+        if(this.systemPromptBtn) this.systemPromptBtn.disabled = false;
+        if(this.systemPrompt) this.systemPrompt.classList.remove('disabled');
+        if(this.systemPromptBtn) this.systemPromptBtn.classList.remove('disabled');
     }
 
     initializePasswordToggles() {
@@ -176,7 +178,7 @@ class FormManager {
     togglePassword(inputId) {
         const input = document.getElementById(inputId);
         const icon = input.nextElementSibling.querySelector('i');
-        
+
         if (input.type === 'password') {
             input.type = 'text';
             icon.classList.remove('fa-eye');
@@ -197,7 +199,7 @@ class TagsManager {
         this.tagsHiddenInput = document.getElementById('tags');
         this.addTagButton = document.querySelector('.add-tag-btn');
         this.initialize();
-        
+
         // Initialize existing tags with click handlers
         document.querySelectorAll('.modern-tag button').forEach(button => {
             button.addEventListener('click', async () => {
@@ -225,8 +227,8 @@ class TagsManager {
 
     initialize() {
         // Add event listeners
-        this.addTagButton.addEventListener('click', () => this.addTag());
-        this.tagInput.addEventListener('keypress', (e) => {
+        if(this.addTagButton) this.addTagButton.addEventListener('click', () => this.addTag());
+        if(this.tagInput) this.tagInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 this.addTag();
@@ -261,10 +263,10 @@ class TagsManager {
     createTagElement(text) {
         const tag = document.createElement('div');
         tag.className = 'modern-tag fade-in';
-        
+
         const tagText = document.createElement('span');
         tagText.textContent = text;
-        
+
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.innerHTML = '<i class="fas fa-times"></i>';
@@ -291,7 +293,7 @@ class TagsManager {
 
         tag.appendChild(tagText);
         tag.appendChild(removeButton);
-        
+
         return tag;
     }
 
@@ -310,7 +312,7 @@ class PromptTagsManager {
         this.tagsHiddenInput = document.getElementById('promptTags');
         this.addTagButton = document.querySelector('.add-prompt-tag-btn');
         this.initialize();
-        
+
         // Initialize existing tags with click handlers
         document.querySelectorAll('#promptTagsContainer .modern-tag button').forEach(button => {
             button.addEventListener('click', async () => {
@@ -338,8 +340,8 @@ class PromptTagsManager {
 
     initialize() {
         // Add event listeners
-        this.addTagButton.addEventListener('click', () => this.addTag());
-        this.tagInput.addEventListener('keypress', (e) => {
+        if(this.addTagButton) this.addTagButton.addEventListener('click', () => this.addTag());
+        if(this.tagInput) this.tagInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 this.addTag();
@@ -374,10 +376,10 @@ class PromptTagsManager {
     createTagElement(text) {
         const tag = document.createElement('div');
         tag.className = 'modern-tag fade-in';
-        
+
         const tagText = document.createElement('span');
         tagText.textContent = text;
-        
+
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.innerHTML = '<i class="fas fa-times"></i>';
@@ -404,7 +406,7 @@ class PromptTagsManager {
 
         tag.appendChild(tagText);
         tag.appendChild(removeButton);
-        
+
         return tag;
     }
 
@@ -424,7 +426,7 @@ class PromptManager {
     }
 
     initialize() {
-        this.exampleButton.addEventListener('click', () => this.prefillExample());
+        if(this.exampleButton) this.exampleButton.addEventListener('click', () => this.prefillExample());
     }
 
     prefillExample() {
@@ -438,7 +440,7 @@ Analyze the document content and extract the following information into a struct
 4. document_date: Extract the document date (format: YYYY-MM-DD)
 5. document_type: Determine a precise type that classifies the document (e.g. Invoice, Contract, Employer, Information and so on)
 6. language: Determine the document language (e.g. "de" or "en")
-      
+
 Important rules for the analysis:
 
 For tags:
@@ -486,13 +488,13 @@ class PasswordManager {
 
     initialize() {
         // Add event listeners for password validation
-        this.passwordInput.addEventListener('input', () => {
+        if(this.passwordInput) this.passwordInput.addEventListener('input', () => {
             const result = this.checkPasswordStrength(this.passwordInput.value);
             this.passwordStrengthDiv.innerHTML = result.html;
             if (this.confirmPasswordInput.value) this.checkPasswordMatch();
         });
 
-        this.confirmPasswordInput.addEventListener('input', () => this.checkPasswordMatch());
+        if(this.confirmPasswordInput) this.confirmPasswordInput.addEventListener('input', () => this.checkPasswordMatch());
 
         // Add form validation
         this.initializeFormValidation();
@@ -513,7 +515,7 @@ class PasswordManager {
         let message = '';
         let color = '';
 
-        switch(strength) {
+        switch (strength) {
             case 0:
             case 1:
                 message = 'Very Weak';
@@ -557,10 +559,10 @@ class PasswordManager {
     checkPasswordMatch() {
         const password = this.passwordInput.value;
         const confirmPassword = this.confirmPasswordInput.value;
-        
+
         if (confirmPassword) {
             const matches = password === confirmPassword;
-            this.passwordMatchDiv.innerHTML = matches 
+            this.passwordMatchDiv.innerHTML = matches
                 ? '<div class="text-green-500 text-sm">Passwords match</div>'
                 : '<div class="text-red-500 text-sm">Passwords do not match</div>';
             return matches;
@@ -569,10 +571,11 @@ class PasswordManager {
     }
 
     initializeFormValidation() {
+        if(!this.form) return;
         const originalSubmit = this.form.onsubmit;
-        
+
         this.form.onsubmit = (e) => {
-            if (this.passwordInput.value) {  // Only validate if password field is present and has a value
+            if (this.passwordInput && this.passwordInput.value) {  // Only validate if password field is present and has a value
                 const passwordStrength = this.checkPasswordStrength(this.passwordInput.value);
                 const passwordsMatch = this.checkPasswordMatch();
 
@@ -582,8 +585,8 @@ class PasswordManager {
                         icon: 'error',
                         title: 'Invalid Password',
                         html: 'Please ensure your password:<br>' +
-                              '- Is strong enough (at least "Medium" strength)<br>' +
-                              '- Matches in both fields'
+                            '- Is strong enough (at least "Medium" strength)<br>' +
+                            '- Matches in both fields'
                     });
                     return false;
                 }
@@ -610,5 +613,5 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initialize textarea newlines
 document.addEventListener('DOMContentLoaded', (event) => {
     const systemPromptTextarea = document.getElementById('systemPrompt');
-    systemPromptTextarea.value = systemPromptTextarea.value.replace(/\\n/g, '\n');
+    if(systemPromptTextarea) systemPromptTextarea.value = systemPromptTextarea.value.replace(/\\n/g, '\n');
 });
