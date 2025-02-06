@@ -1,10 +1,11 @@
-// aiServiceFactory.js
+    // aiServiceFactory.js
 const config = require('../config/config');
 const openaiService = require('./openaiService');
 const ollamaService = require('./ollamaService');
 const customService = require('./customService');
 const legalNerService = require('./legalNerService'); // Import new service
 const relationshipExtractionService = require('./relationshipExtractionService');
+const clauseIdentificationService = require('./clauseIdentificationService');
 
 class AIServiceFactory {
     static getService(provider) {
@@ -42,6 +43,15 @@ class AIServiceFactory {
           console.error("[ERROR] Error extracting relationships:", error);
         }
       }
+        if (config.limitFunctions?.activateClauseIdentification === 'yes') {
+            try {
+                const clauses = await clauseIdentificationService.identifyClauses(content);
+                analysis.clauses = clauses;
+                console.log("[DEBUG] Adding identified clauses to document");
+            } catch (error) {
+                console.error("[ERROR] Error identifying clauses:", error);
+            }
+        }
     return analysis;
   }
 }
