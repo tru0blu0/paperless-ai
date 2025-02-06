@@ -46,7 +46,7 @@ class OllamaService {
             
             const calculateNumCtx = (promptTokenCount, expectedResponseTokens) => {
                 const totalTokenUsage = promptTokenCount + expectedResponseTokens;
-                const maxCtxLimit = 128000;
+                const maxCtxLimit = config.ollama.maxCtx || 128000; // Use config or default
                 
                 const numCtx = Math.min(totalTokenUsage, maxCtxLimit);
                 
@@ -62,44 +62,44 @@ class OllamaService {
             };
             
             const { freeMemoryMB } = await getAvailableMemory();
-            const expectedResponseTokens = 1024;
+            const expectedResponseTokens = config.ollama.expectedResponseTokens || 1024; // Use config or default
             const promptTokenCount = calculatePromptTokenCount(prompt);
             
             const numCtx = calculateNumCtx(promptTokenCount, expectedResponseTokens);
-            const response = await this.client.post(`${this.apiUrl}/api/generate`, {
+            const ollamaOptions = {
+                temperature: config.ollama.temperature || 0.7,
+                top_p: config.ollama.top_p || 0.9,
+                repeat_penalty: config.ollama.repeat_penalty || 1.1,
+                top_k: config.ollama.top_k || 7,
+                num_predict: config.ollama.num_predict || 256,
+                num_ctx: numCtx
+            };
+
+            const systemPrompt = `
+            You are a document analyzer. Your task is to analyze documents and extract relevant information. You do not ask back questions. 
+            YOU MUSTNOT: Ask for additional information or clarification, or ask questions about the document, or ask for additional context.
+            YOU MUSTNOT: Return a response without the desired JSON format.
+            YOU MUST: Analyze the document content and extract the following information into this structured JSON format and only this format!:         {
+                "title": "xxxxx",
+                "correspondent": "xxxxxxxx",
+                "tags": ["Tag1", "Tag2", "Tag3", "Tag4"],
+                "document_date": "YYYY-MM-DD",
+                "language": "en/de/es/..."
+                }
+                ALWAYS USE THE INFORMATION TO FILL OUT THE JSON OBJECT. DO NOT ASK BACK QUESTIONS.
+                `;
+
+            const requestBody = {
                 model: this.model,
                 prompt: prompt,
-                system: `
-                You are a document analyzer. Your task is to analyze documents and extract relevant information. You do not ask back questions. 
-                YOU MUSTNOT: Ask for additional information or clarification, or ask questions about the document, or ask for additional context.
-                YOU MUSTNOT: Return a response without the desired JSON format.
-                YOU MUST: Analyze the document content and extract the following information into this structured JSON format and only this format!:         {
-                    "title": "xxxxx",
-                    "correspondent": "xxxxxxxx",
-                    "tags": ["Tag1", "Tag2", "Tag3", "Tag4"],
-                    "document_date": "YYYY-MM-DD",
-                    "language": "en/de/es/..."
-                    }
-                    ALWAYS USE THE INFORMATION TO FILL OUT THE JSON OBJECT. DO NOT ASK BACK QUESTIONS.
-                    `,
-                    stream: false,
-                    options: {
-                        temperature: 0.7, 
-                        top_p: 0.9,
-                        repeat_penalty: 1.1,
-                        top_k: 7,
-                        num_predict: 256,
-                        num_ctx: numCtx 
-                    }
-                    //   options: {
-                        //     temperature: 0.3,        // Moderately low for balance between consistency and creativity
-                        //     top_p: 0.7,             // More reasonable value to allow sufficient token diversity
-                        //     repeat_penalty: 1.1,     // Return to original value as 1.2 might be too restrictive
-                        //     top_k: 40,              // Increased from 10 to allow more token options
-                        //     num_predict: 512,        // Reduced from 1024 to a more stable value
-                        //     num_ctx: 2048           // Reduced context window for more stable processing
-                        // }
-                    });
+                system: systemPrompt,
+                stream: false,
+                options: ollamaOptions
+            };
+
+            console.debug("Ollama Request Body:", JSON.stringify(requestBody, null, 2)); // Log request for debugging
+
+            const response = await this.client.post(`${this.apiUrl}/api/generate`, requestBody);
                     
                     if (!response.data || !response.data.response) {
                         throw new Error('Invalid response from Ollama API');
@@ -169,7 +169,7 @@ class OllamaService {
             
             const calculateNumCtx = (promptTokenCount, expectedResponseTokens) => {
                 const totalTokenUsage = promptTokenCount + expectedResponseTokens;
-                const maxCtxLimit = 128000;
+                const maxCtxLimit = config.ollama.maxCtx || 128000; // Use config or default
                 
                 const numCtx = Math.min(totalTokenUsage, maxCtxLimit);
                 
@@ -185,45 +185,44 @@ class OllamaService {
             };
             
             const { freeMemoryMB } = await getAvailableMemory();
-            const expectedResponseTokens = 1024;
+            const expectedResponseTokens = config.ollama.expectedResponseTokens || 1024; // Use config or default
             const promptTokenCount = calculatePromptTokenCount(prompt);
             
             const numCtx = calculateNumCtx(promptTokenCount, expectedResponseTokens);
+            const ollamaOptions = {
+                temperature: config.ollama.temperature || 0.7,
+                top_p: config.ollama.top_p || 0.9,
+                repeat_penalty: config.ollama.repeat_penalty || 1.1,
+                top_k: config.ollama.top_k || 7,
+                num_predict: config.ollama.num_predict || 256,
+                num_ctx: numCtx
+            };
+
+            const systemPrompt = `
+            You are a document analyzer. Your task is to analyze documents and extract relevant information. You do not ask back questions. 
+            YOU MUSTNOT: Ask for additional information or clarification, or ask questions about the document, or ask for additional context.
+            YOU MUSTNOT: Return a response without the desired JSON format.
+            YOU MUST: Analyze the document content and extract the following information into this structured JSON format and only this format!:         {
+            "title": "xxxxx",
+            "correspondent": "xxxxxxxx",
+            "tags": ["Tag1", "Tag2", "Tag3", "Tag4"],
+            "document_date": "YYYY-MM-DD",
+            "language": "en/de/es/..."
+            }
+            ALWAYS USE THE INFORMATION TO FILL OUT THE JSON OBJECT. DO NOT ASK BACK QUESTIONS.
+            `;
           
-            const response = await this.client.post(`${this.apiUrl}/api/generate`, {
+            const requestBody = {
                 model: this.model,
                 prompt: prompt + "\n\n" + JSON.stringify(content),
-                system: `
-                You are a document analyzer. Your task is to analyze documents and extract relevant information. You do not ask back questions. 
-                YOU MUSTNOT: Ask for additional information or clarification, or ask questions about the document, or ask for additional context.
-                YOU MUSTNOT: Return a response without the desired JSON format.
-                YOU MUST: Analyze the document content and extract the following information into this structured JSON format and only this format!:         {
-                "title": "xxxxx",
-                "correspondent": "xxxxxxxx",
-                "tags": ["Tag1", "Tag2", "Tag3", "Tag4"],
-                "document_date": "YYYY-MM-DD",
-                "language": "en/de/es/..."
-                }
-                ALWAYS USE THE INFORMATION TO FILL OUT THE JSON OBJECT. DO NOT ASK BACK QUESTIONS.
-                `,
+                system: systemPrompt,
                 stream: false,
-                options: {
-                  temperature: 0.7, 
-                  top_p: 0.9,
-                  repeat_penalty: 1.1,
-                  top_k: 7,
-                  num_predict: 256,
-                  num_ctx: numCtx
-                }
-              //   options: {
-              //     temperature: 0.3,        // Moderately low for balance between consistency and creativity
-              //     top_p: 0.7,             // More reasonable value to allow sufficient token diversity
-              //     repeat_penalty: 1.1,     // Return to original value as 1.2 might be too restrictive
-              //     top_k: 40,              // Increased from 10 to allow more token options
-              //     num_predict: 512,        // Reduced from 1024 to a more stable value
-              //     num_ctx: 2048           // Reduced context window for more stable processing
-              // }
-            });
+                options: ollamaOptions
+            };
+
+            console.debug("Ollama Request Body:", JSON.stringify(requestBody, null, 2)); // Log request for debugging
+
+            const response = await this.client.post(`${this.apiUrl}/api/generate`, requestBody);
 
             if (!response.data || !response.data.response) {
                 throw new Error('Invalid response from Ollama API');
