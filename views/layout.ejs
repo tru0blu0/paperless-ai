@@ -1,39 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="h-full" data-theme="light">
+
 <head>
-  <title>Paperless Assistant</title>
-  <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      margin: 20px; 
-      line-height: 1.6;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    .document { 
-      border: 1px solid #ddd; 
-      padding: 15px; 
-      margin: 15px 0;
-      border-radius: 4px;
-    }
-    .document:hover {
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .tag {
-      background: #e9ecef;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 0.9em;
-      margin-right: 5px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paperless-AI</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-  <div class="container">
-    <%- content %>
-  </div>
+
+<body class="h-full">
+    <button id="themeToggle" class="theme-toggle">
+        <i class="fas fa-moon dark:fas fa-sun"></i>
+    </button>
+
+    <div class="layout-container">
+        <button id="mobileMenuButton" class="mobile-menu-button">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- Sidebar -->
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h1 class="brand-title">Paperless-AI<small style="display: block;"><%= version %></small></h1>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="/dashboard" class="sidebar-link <%= locals.activePage === 'dashboard' ? 'active' : '' %>">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/manual" class="sidebar-link <%= locals.activePage === 'manual' ? 'active' : '' %>">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Manual</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/chat" class="sidebar-link <%= locals.activePage === 'chat' ? 'active' : '' %>">
+                            <i class="fa-solid fa-comment"></i>
+                            <span>Chat</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/playground" class="sidebar-link <%= locals.activePage === 'playground' ? 'active' : '' %>">
+                            <i class="fa-solid fa-flask-vial"></i>
+                            <span>Playground</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/history" class="sidebar-link <%= locals.activePage === 'history' ? 'active' : '' %>">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/settings" class="sidebar-link <%= locals.activePage === 'settings' ? 'active' : '' %>">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/logout" class="sidebar-link">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <%- content %>
+            </div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            function toggleSidebar(event) {
+                event.stopPropagation(); // Prevent event bubbling
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                
+                // Toggle menu icon
+                const icon = mobileMenuButton.querySelector('i');
+                if (sidebar.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+
+            // Toggle sidebar when clicking the menu button
+            mobileMenuButton.addEventListener('click', toggleSidebar);
+
+            // Close sidebar when clicking the overlay
+            sidebarOverlay.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent event bubbling
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar(event);
+                }
+            });
+
+            // Prevent sidebar from closing when clicking inside it
+            sidebar.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+
+            // Handle links in sidebar
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    // Don't prevent default here to allow navigation
+                    event.stopPropagation();
+                });
+            });
+        });
+    </script>
+    <script src="js/dashboard.js"></script>
 </body>
+
 </html>
